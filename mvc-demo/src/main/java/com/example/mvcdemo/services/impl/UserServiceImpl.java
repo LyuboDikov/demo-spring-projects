@@ -1,5 +1,6 @@
 package com.example.mvcdemo.services.impl;
 
+import com.example.mvcdemo.dtos.UserLoginDto;
 import com.example.mvcdemo.dtos.UserRegisterDto;
 import com.example.mvcdemo.entities.User;
 import com.example.mvcdemo.repositories.UserRepository;
@@ -39,5 +40,20 @@ public class UserServiceImpl implements UserService {
         this.userRepository.save(user);
 
         return true;
+    }
+
+    @Override
+    public Long validateUserLoginDetails(UserLoginDto userRequest) {
+        var user = this.userRepository.findFirstByUsername(userRequest.getUsername());
+
+        if (user == null) {
+            return null;
+        }
+
+        if (!user.getPassword().equals(userRequest.getPassword())) {
+            return null;
+        }
+
+        return user.getId();
     }
 }
